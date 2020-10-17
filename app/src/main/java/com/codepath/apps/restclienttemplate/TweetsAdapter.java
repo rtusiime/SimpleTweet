@@ -11,23 +11,23 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 
 import java.util.List;
 
-public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder>{
+public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder> {
 
+    // Context and list of tweets
     Context context;
     List<Tweet> tweets;
 
-    //pass in the context and list of tweets
+    // Pass in the context and list of tweets
     public TweetsAdapter(Context context, List<Tweet> tweets) {
         this.context = context;
         this.tweets = tweets;
     }
 
-    //for each row, inflate the layout
+    // For each row, inflate the layout
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -35,20 +35,22 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         return new ViewHolder(view);
     }
 
-    //bind values based on the position of the element
+    // Bind values based on the position of the element
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        //get the data at position
+        // Get the data at position
         Tweet tweet = tweets.get(position);
-
-        //bind the tweet with the view holder
+        // Bind the tweet with view holder
         holder.bind(tweet);
     }
 
+    // Grab the size of tweets to find the number of tweets
     @Override
     public int getItemCount() {
         return tweets.size();
     }
+
+    /* Within the RecyclerView.Adapter class */
 
     // Clean all elements of the recycler
     public void clear() {
@@ -56,32 +58,38 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
-    // Add a list of tweets
-    public void addAll(List<Tweet> tweetlist) {
-        tweets.addAll(tweetlist);
+    // Add a list of tweets to the tweet list -- change to type used
+    public void addAll(List<Tweet> tweetList) {
+        tweets.addAll(tweetList);
         notifyDataSetChanged();
     }
 
-    //define a viewholder
+
+    // Define a view holder
     public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView timeStamp;
         ImageView ivProfileImage;
         TextView tvBody;
-        TextView  tvscreenName;
-
+        TextView tvScreenName;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvBody = itemView.findViewById(R.id.tvBody);
-            tvscreenName = itemView.findViewById(R.id.tvScreenName);
+            tvScreenName = itemView.findViewById(R.id.tvScreenName);
+            //timeStamp = itemView.findViewById(R.id.timeView);
         }
 
-        public void bind(Tweet tweet){
+        public void bind(Tweet tweet) {
+            // body was inside of tweet
             tvBody.setText(tweet.body);
-            tvscreenName.setText(tweet.user.screenName);
-            Glide.with(context).load(tweet.user.profileImageUrl)
-                    .transform(new CircleCrop())
-                    .into(ivProfileImage);
+            // User is an object that held multiple strings
+            tvScreenName.setText(tweet.user.screenName);
+            // We use glide for not string objects
+            Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
+            // Bind the timestamp
+            timeStamp.setText(tweet.relativeTimeStamp());
+
         }
     }
 }
